@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+
+	@media (max-width: 768px) { 
+		.right-column{
+			margin-left: 0px;
+		}
+	}
+
+	@media (min-width: 768px) { 
+		.right-column{
+			margin-left: 20px;
+		}
+	}
+
+	.blog-post-container{
+		margin-bottom: 20px;
+		width: 100%;
+	}
+	.create-post-bar{
+		background-color: #fff;
+		margin-bottom:20px;
+	}
+
+	.left-column{
+		padding:0px;
+	}
+
+	.right-column{
+		padding:0px;
+	}
+	.lead{
+		font-size: 17px;
+	}
+
+
+
+</style>
+
+{% if request.user.is_authenticated %}
+
+<!-- main content -->
+<div class="container">
+    <div class="row">
+
+        <!-- blog feed -->
+        <div class="left-column col-lg-7 offset-lg-1">
+
+            <!-- Top 'create post' bar -->
+            <div class="d-lg-none mb-3">
+                <div class="card m-auto d-flex flex-column p-3">
+                    <img class="img-fluid d-block m-auto pb-2" src="{% static 'logo.png' %}" width="72" height="72">
+                    <p class="lead m-auto pb-2">Tags will be listed here</p>
+                    <ul class="list-group">
+                        {% for i in tags %}
+                        <li class="list-group-item text-center">{{ i }}<a type="button"
+                                                                          class="btn btn-danger btn-lg btn-primary btn-block delete_btn"
+                                                                          href="{% url 'blog:deletetag' id=i.id %}">DELETE</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'blog:createtag' %}">Create TAG</a></p>
+                </div>
+            </div>
+            <!-- end Top 'create post' bar -->
+
+            <!-- Blog posts-->
+            {% if blog_posts %}
+            {% for post in blog_posts %}
+            {% if post.author_id == user.id %}
+            <div class="blog-post-container">
+                {% include 'blog/snippets/blog_post_snippet.html' with blog_post=post %}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <div class="blog-post-container">
+                {% include 'blog/snippets/blog_post_snippet.html' with query=query %}
+            </div>
+            {% endif %}
+            <!-- End Blog posts-->
+
+            <!-- Pagination -->
+            {% include 'blog/snippets/blog_post_pagination.html' with blog_posts=blog_posts %}
+
+        </div>
+        <!-- end blog feed -->
+
+
+        <!-- Right 'create post' column  -->
+        <div class="right-column col-lg-3 d-lg-flex d-none flex-column">
+
+            <div class="card create-post-bar d-flex flex-column p-3">
+                <img class="img-fluid d-block m-auto pb-2" src="{% static 'logo.png' %}" width="72" height="72">
+                <p class="lead">TAGS will be listed here</p>
+                <ul class="list-group pb-4">
+                    {% for i in tags %}
+                    <!--                        {% if blog_post.author_id == blog_post.tag.owner_id %}-->
+                    <li class="list-group-item text-center card-title">{{ i }}<a type="button"
+                                                                                 class="btn btn-danger btn-lg btn-primary btn-block delete_btn"
+                                                                                 href="{% url 'blog:deletetag' id=i.id %}">DELETE</a>
+                    </li>
+                    <!--                        {% else %}-->
+                    <!--                        {% endif %}-->
+                    {% endfor %}
+                </ul>
+                <p class="m-auto"><a class="btn btn-primary" href="{% url 'blog:createtag' %}">Create TAG</a></p>
+            </div>
+
+        </div>
+        <!-- end Right 'create post' column  -->
+
+
+    </div>
+</div>
+
+{% else %}
+
+<div class="jumbotron jumbotron-fluid" style="background-image: url('https://images.pexels.com/photos/3782226/pexels-photo-3782226.jpeg?cs=srgb&dl=pexels-polina-zimmerman-3782226.jpg&fm=jpg&_gl=1*1yum70w*_ga*MTM3NzA4OTU1OC4xNjY2NjM0NDY4*_ga_8JE65Q40S6*MTY2NjYzNDQ2OC4xLjEuMTY2NjYzNDUxNC4wLjAuMA..');
+    background-color: #cccccc;
+    min-height: 100vh;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;">
+    <div class="container">
+        <h1 class="display-4">Notes APP</h1>
+        <p class="lead">Implemented by Tadas Šved.</p>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock content %}
+
+
+
